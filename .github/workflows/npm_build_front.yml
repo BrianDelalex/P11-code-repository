@@ -26,7 +26,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-        cache-dependencies-path: front/yarn.lock
+        cache-dependency-path: front/yarn.lock
     - name: Build
       run: | 
         cd front
