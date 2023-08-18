@@ -27,11 +27,15 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
         cache-dependency-path: front/yarn.lock
+    - name: Install
+      run: |
+        cd front
+        yarn install
     - name: Build
       run: | 
         cd front
         yarn build
-    - name: Build
+    - name: Test
       run: | 
         cd front
         yarn test
