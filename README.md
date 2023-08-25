@@ -8,10 +8,10 @@ This project contains source code and supporting files for MedHead project's Pro
 
 # Build back locally
 
-**Prerequisite:**
+**Prerequisites:**
 - Java Development Kit (JDK) Version 17 - Recommended [BellSoft Liberica JDK](https://bell-sw.com/pages/downloads/#/java-17-lts)
 
-Once the prerequisite set up run the following commands to build.
+Once the prerequisites set up run the following commands to build.
 ```
 cd back
 ./gradlew.bat build
@@ -26,11 +26,11 @@ To run the unit tests locally use this command `./gradlew.bat test`.
 
 # Build front locally
 
-**Prerequisite:**
+**Prerequisites:**
 - Node.js - Version 18.x
 - yarn - Use npm to install it `npm install -g yarn`.
 
-Once the prerequisite set up run the following commands to build.
+Once the prerequisites set up run the following commands to build.
 ```
 cd front
 yarn install // Install project dependencies
@@ -42,7 +42,7 @@ To start a developpement server run this command `yarn dev`.
 > [!NOTE]
 > The above command will only start the server on your local network if you want to expose it use `yarn dev --host` instead.
 
-To run the application unit tests use this command `yarn test`.
+To run the application's unit tests use this command `yarn test`.
 
 # Workflows - Back
 
@@ -59,6 +59,6 @@ On push or pull request on the main branch this workflow will automatically buil
 This workflow use the below actions.
 
 - [actions/checkout](https://github.com/actions/checkout) => This action checks-out your repository under $GITHUB_WORKSPACE, so your workflow can access it.
-- [actions/setup-node] => This action download and cache distribution of the requested Node.js version and cache yarn dependencies.
+- [actions/setup-node](https://github.com/actions/setup-node) => This action download and cache distribution of the requested Node.js version and cache yarn dependencies.
 
 On push or pull request on the main branch this workflow will automatically build the front part of the project and run the unit tests related to it.
