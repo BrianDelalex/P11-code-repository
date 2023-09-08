@@ -1,0 +1,60 @@
+.windows {
+    width: 40%;
+    height: 30%;
+    margin: auto;
+    background-color: grey;
+    border-radius: 2px;
+}
+
+@media only screen and (max-width: 1024px) {
+    /* Styles */
+    .windows {
+        width: 80%;
+    }
+}
+
+.containerInputLogin {
+    height: 100%;
+    width: 70%;
+    display: flex;
+    justify-content: center; /* Vertical */
+    flex-direction: column;
+    gap: 10px;
+    margin: auto;
+    padding: 20px;
+}
+
+select {
+    padding: 10px;
+}
+
+.css-1nmdiq5-menu {
+    color: black;
+}
+
+.locationInput {
+    display: flex;
+    justify-content: center; /* Vertical */
+    flex-direction: row;
+    
+}
+
+/* GooglePlacesAutocomplete */
+.css-b62m3t-container {
+    width: 80%;
+}
+
+.locButton {
+    width: 15%;
+    justify-content: center;
+}
+
+.locImage {
+    width: 50%;
+}
+
+.btnSubmit {
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+}
