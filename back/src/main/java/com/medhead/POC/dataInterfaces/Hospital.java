@@ -25,21 +25,21 @@ public class Hospital {
         this.freeBeds = freeBeds;
     }
 
-    public float latitude;
-    public float getLatitude() {
+    public String latitude;
+    public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
-    public float longitude;
-    public float getLongitude() {
+    public String longitude;
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
@@ -64,7 +64,7 @@ public class Hospital {
 
     public Hospital() {}
 
-    public Hospital(int freeBeds, float latitude, float longitude, String organisationName, String[] specialities) {
+    public Hospital(int freeBeds, String latitude, String longitude, String organisationName, String[] specialities) {
         this.freeBeds = freeBeds;
         this.latitude = latitude;
         this.longitude = longitude;
