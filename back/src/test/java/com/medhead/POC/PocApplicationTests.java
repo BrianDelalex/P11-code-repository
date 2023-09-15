@@ -20,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -54,17 +57,67 @@ class PocApplicationTests {
 
     @Test
     public void hospitalShouldReturnErrorMissingParameters() throws Exception {
-        ResponseEntity<String> response = this.restTemplate.exchange("http://localhost:" + port + "/hospital?latitude=50.39028759089191&longitude=-3.9204667072600907", HttpMethod.GET, null, String.class); 
+        String url = "http://localhost:" + port + "/hospital";
+        String uri;
+        Map<String, String> params = new HashMap<>();
+        params.put("speciality", "Cardiologie");
+        params.put("latitude", "50.39028759089191");
+        params.put("longitude", "-3.9204667072600907");
+
+        // Test without speciality parameter
+        uri = "?latitude={latitude}&longitude={longitude}";
+        ResponseEntity<String> response = this.restTemplate.exchange(url + uri , HttpMethod.GET, null, String.class, params);
         assertEquals(400, response.getStatusCode().value());
         assertThat(response.getBody()).contains("Bad Request");
-        response = this.restTemplate.exchange("http://localhost:" + port + "/hospital?speciality=Cardiologie&longitude=-3.9204667072600907", HttpMethod.GET, null, String.class); 
+
+        // Test without latitude parameter
+        uri = "?speciality={speciality}&longitude={longitude}";
+        response = this.restTemplate.exchange(url + uri, HttpMethod.GET, null, String.class, params); 
         assertEquals(400, response.getStatusCode().value());
         assertThat(response.getBody()).contains("Bad Request");
-        response = this.restTemplate.exchange("http://localhost:" + port + "/hospital?speciality=Cardiologie&latitude=50.39028759089191", HttpMethod.GET, null, String.class); 
+
+        // Test without longitude parameter
+        uri = "?speciality={speciality}&latitude={latitude}";
+        response = this.restTemplate.exchange(url + uri, HttpMethod.GET, null, String.class, params); 
         assertEquals(400, response.getStatusCode().value());
         assertThat(response.getBody()).contains("Bad Request");
-        response = this.restTemplate.exchange("http://localhost:" + port + "/hospital?speciality=&latitude=50.39028759089191&longitude=-3.9204667072600907", HttpMethod.GET, null, String.class); 
-        assertThat(response.getBody()).contains("Bad Request");
+
+        // Test with empty speciality parameter
+        params.put("speciality", "");
+        uri = "?speciality={speciality}&latitude={latitude}&longitude={longitude}";
+        response = this.restTemplate.exchange(url + uri, HttpMethod.GET, null, String.class, params); 
+        assertThat(response.getBody()).contains("INVALID_PARAMETER");
         assertEquals(400, response.getStatusCode().value());
+    }
+
+    @Test
+    public void hospitalShouldReturnOkWithoutData() throws Exception {
+        String url = "http://localhost:" + port + "/hospital";
+        String uri = "?speciality={speciality}&latitude={latitude}&longitude={longitude}";
+        Map<String, String> params = new HashMap<>();
+
+        params.put("speciality", "azertd");
+        params.put("latitude", "50.39028759089191");
+        params.put("longitude", "-3.9204667072600907");
+
+        // Test with invalid speciality
+        ResponseEntity<String> response = this.restTemplate.exchange(url + uri, HttpMethod.GET, null, String.class, params); 
+        assertEquals(200, response.getStatusCode().value());
+        assertThat(response.getBody()).contains("\"data\":\"not_found\"");
+    }
+
+    @Test
+    public void hospitalShouldReturnOkAndHospitalName() throws Exception {
+        String url = "http://localhost:" + port + "/hospital";
+        String uri = "?speciality={speciality}&latitude={latitude}&longitude={longitude}";
+        Map<String, String> params = new HashMap<>();
+
+        params.put("speciality", "Cardiologie");
+        params.put("latitude", "50.39028759089191");
+        params.put("longitude", "-3.9204667072600907");
+
+        ResponseEntity<String> response = this.restTemplate.exchange(url + uri, HttpMethod.GET, null, String.class, params);
+        assertEquals(200, response.getStatusCode().value());
+        assertThat(response.getBody()).contains("Lee Mill Hospital");
     }
 }

@@ -6,10 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
-import javax.sound.sampled.AudioFormat.Encoding;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -27,9 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medhead.POC.dataInterfaces.Hospital;
 import com.medhead.POC.dataInterfaces.HospitalRepository;
 import com.medhead.POC.dataInterfaces.MatrixApiTypes.Response;
@@ -72,13 +67,16 @@ public class PocApplication {
     }
     
     @GetMapping(value = "/hospital", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> nearestHospital(
+    public ResponseEntity<Map<String, String>> nearestHospital(
         @RequestParam(value = "speciality", required = true)String speciality,
         @RequestParam(value = "latitude", required = true)String latitude,
         @RequestParam(value = "longitude", required = true)String longitude)
     {
         if (speciality.isEmpty()) {
-            return new ResponseEntity<String>("Bad Request", null, HttpStatus.BAD_REQUEST);
+            Map<String, String> data = new HashMap<>();
+            data.put("reason", "INVALID_PARAMETER");
+            data.put("message", "'speciality' parameter is empty.");
+            return new ResponseEntity<Map<String, String>>(data, null, HttpStatus.BAD_REQUEST);
         }
         List<String> specialities = new ArrayList<String>();
         specialities.add(speciality);
@@ -113,18 +111,28 @@ public class PocApplication {
         Response nearest = responses
             .stream()
             .min(Comparator.comparing(Response::GetDuration))
-            .orElseThrow(NoSuchElementException::new);
-
-        int i = 0;
-        for (Response r : responses) {
-            if (r == nearest) {
-                System.out.println("The nearest hospital is " + hospitals.get(i).getOrganisationName());
-                break;
+            .orElse(null);
+        Hospital result = null;
+        if (nearest != null) {
+            int i = 0;
+            for (Response r : responses) {
+                if (r == nearest) {
+                    result = hospitals.get(i);
+                    System.out.println("The nearest hospital is " + hospitals.get(i).getOrganisationName());
+                    break;
+                }
+                i++;
             }
-            i++;
         }
 
+        Map<String, String> data = new HashMap<>();
+        data.put("data", "not_found");
 
-        return new ResponseEntity<String>("OK", null, HttpStatus.OK);
+        if (result == null) {
+            return new ResponseEntity<Map<String, String>>(data, null, HttpStatus.OK);
+        }
+
+        data.put("data", result.getOrganisationName());
+        return new ResponseEntity<Map<String, String>>(data, null, HttpStatus.OK);
     }
 }
