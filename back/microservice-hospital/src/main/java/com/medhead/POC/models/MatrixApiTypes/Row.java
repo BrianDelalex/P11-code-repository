@@ -1,4 +1,4 @@
-package com.medhead.POC.dataInterfaces.MatrixApiTypes;
+package com.medhead.POC.models.MatrixApiTypes;
 
 import java.util.List;
 

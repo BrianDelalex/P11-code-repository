@@ -25,20 +25,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.medhead.POC.dataInterfaces.Hospital;
-import com.medhead.POC.dataInterfaces.HospitalRepository;
-import com.medhead.POC.dataInterfaces.MatrixApiTypes.Response;
+import com.medhead.POC.models.Hospital;
+import com.medhead.POC.models.HospitalRepository;
+import com.medhead.POC.models.MatrixApiTypes.Response;
 
 @SpringBootApplication
 @RestController
-public class PocApplication {
+public class MhospitalApplication {
     
     @Autowired
     private HospitalRepository repository;
     private RestTemplate restTemplate;
     
     public static void main(String[] args) {
-        SpringApplication.run(PocApplication.class, args);
+        SpringApplication.run(MhospitalApplication.class, args);
     }
 
     @Bean
