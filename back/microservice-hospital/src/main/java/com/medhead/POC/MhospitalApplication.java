@@ -17,40 +17,45 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.medhead.POC.dao.SpecialityRepository;
 import com.medhead.POC.models.Hospital;
 import com.medhead.POC.models.HospitalRepository;
+import com.medhead.POC.models.Speciality;
 import com.medhead.POC.models.MatrixApiTypes.Response;
 
 @SpringBootApplication
+@CrossOrigin(maxAge = 3600)
 @RestController
 public class MhospitalApplication {
-    
     @Autowired
+    private SpecialityRepository specialityRepository;
     private HospitalRepository repository;
     private RestTemplate restTemplate;
-    
+
     public static void main(String[] args) {
         SpringApplication.run(MhospitalApplication.class, args);
     }
 
     @Bean
-	public RestTemplate restTemplate(RestTemplateBuilder builder) {
-		return this.restTemplate = builder.build();
-	}
-    
-    @GetMapping("/hello")
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        return this.restTemplate = builder.build();
+    }
+
+    @GetMapping(value = "/hello")
     public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
         return String.format("Hello %s!", name);
     }
-    
+
     @GetMapping(value = "/hospital/bySpeciality", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> hospitalBySpeciality(@RequestParam(value = "speciality", defaultValue = "")String speciality) {
         HttpHeaders headers = new HttpHeaders();
@@ -65,7 +70,7 @@ public class MhospitalApplication {
         
         return new ResponseEntity<String>(hospitals.toString(), headers, HttpStatus.OK);
     }
-    
+
     @GetMapping(value = "/hospital", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> nearestHospital(
         @RequestParam(value = "speciality", required = true)String speciality,
@@ -134,5 +139,22 @@ public class MhospitalApplication {
 
         data.put("data", result.getOrganisationName());
         return new ResponseEntity<Map<String, String>>(data, null, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/hospital/specialities", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getAllSpecialities() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        List<Speciality> specialities = specialityRepository.findAll();
+
+        System.out.println("List size " + specialities.size() );
+        String json = "{ \"specialities\": [";
+        for (Speciality s : specialities) {
+            json += s.ToJson();
+            json += ",";
+        }
+        json = json.substring(0, json.length() - 1);
+        json += "]}";
+        return new ResponseEntity<String>(json, headers, HttpStatus.OK);
     }
 }
