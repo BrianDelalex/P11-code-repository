@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Geocode from "react-geocode";
 import { Toaster, toast } from 'react-hot-toast';
@@ -15,8 +15,12 @@ const Home = () => {
     const [location, setLocation] = useState(null);
     const [data, setData] = useState(undefined);
     const [autocompleteData, setAutocompleteData] = useState(undefined);
-    const [specialities, setSpecialities] = useState("");
+    const [specialities, setSpecialities] = useState([]);
     const [specialityGroups, setSpecialityGroups] = useState([]);
+    const [selectedGroup, setSelectedGroup] = useState("");
+    const [selectedSpeciality, setSelectedSpeciality] = useState("");
+    const [selectableSpecialities, setSelectableSpecialities] = useState([]);
+    let groupSelectRef = useRef();
 
     useEffect(() => {
       let url = import.meta.env.VITE_HOSPITAL_SERVICE_URL;
@@ -34,17 +38,18 @@ const Home = () => {
         
         console.log("Result: " + body);
         const parsed = JSON.parse(body);
-        let specialitiesList = [];
         let groupList = [];
+        let specialitiesList = [];
         for (let obj of parsed.specialities) {
           console.log(JSON.stringify(obj));
-          specialitiesList.push(obj.speciality);
           groupList.push(obj.group);
+          specialitiesList.push(obj);
         }
         console.log("grouplist length ", groupList.length);
         groupList = [...new Set(groupList)];
         console.log("grouplist length ", groupList.length);
         setSpecialities(specialitiesList);
+        setSelectableSpecialities(specialitiesList);
         setSpecialityGroups(groupList);
       }, (error) => {
         console.log("Error: " + error);
@@ -53,16 +58,16 @@ const Home = () => {
 
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(success, error);
+            navigator.geolocation.getCurrentPosition(getLocationSuccess, getLocationError);
         } else {
             console.log("Geolocation not supported");
+            toast.error("Geolocation is not supported on your device");
         }
     }
 
-    function success(position) {
+    function getLocationSuccess(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        const utf8Decoder = new TextDecoder("utf-8");
         setLocation({ latitude, longitude });
         console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
         //Geocode.fromLatLng(latitude,longitude, googleApiKey)
@@ -103,22 +108,47 @@ const Home = () => {
             });
     }
 
-    function error() {
-        console.log("Unable to retrieve your location");
+    function getLocationError(error) {
+        console.log(`Unable to retrieve your location ${error}`);
+    }
+
+    function OnGroupSelected(evt) {
+      console.log("OnGroupSelected -> ", evt.currentTarget.value);
+      setSelectedGroup(evt.currentTarget.value);
+      const selectable = [];
+      for (const obj of specialities) {
+        console.log(`comp => ${obj.group} === ${evt.currentTarget.value}`);
+        if (obj.group === evt.currentTarget.value) {
+          selectable.push(obj);
+          console.log(`equal`);
+        }
+      }
+      setSelectableSpecialities(selectable);
+    }
+
+    function OnSpecialitySelected(evt) {
+      console.log("OnSpecialitySelected -> ", evt.currentTarget.value);
+      setSelectedSpeciality(evt.currentTarget.value);
+      const index = specialities.findIndex((element) => element.speciality === evt.currentTarget.value);
+      setSelectedGroup(specialities[index].group);
+      groupSelectRef.current.value = specialities[index].group;
     }
 
     return (
         <div className="windows">
             <div><Toaster/></div>
              <div className="containerInputLogin">
-                <select className="select" name="medicalGroup" id="medicalGroup">
+                <select ref={groupSelectRef} onChange={evt => OnGroupSelected(evt)} className="select" name="medicalGroup" id="medicalGroup">
                     <option value="">Please select a medical group type</option>
                     {specialityGroups.map((element, i ) => {
                       return (<option key={i} value={element}>{element}</option>);
                     })}
                 </select>
-                <select name="speciality" id="speciality">
+                <select onChange={evt => OnSpecialitySelected(evt)} name="speciality" id="speciality">
                     <option value="">Please select speciality type</option>
+                    {selectableSpecialities.map((element, i) => {
+                        return (<option key={i} value={element.speciality}>{element.speciality}</option>);
+                      })}
                 </select>
                 <div className='locationInput'>
                     <GooglePlacesAutocomplete 
