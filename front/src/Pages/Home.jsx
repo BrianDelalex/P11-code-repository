@@ -6,6 +6,8 @@ import BodyReader from '../Components/BodyReader';
 
 let googleApiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 import './Home.css'
+import { get_address_from_coords, get_coords_from_address } from '../Components/APIs/Google';
+import { find_nearest_hospital, get_hospitals_specialities } from '../Components/APIs/Hospital';
 
 Geocode.setLocationType("ROOFTOP");
 Geocode.setApiKey(googleApiKey);
@@ -14,46 +16,26 @@ const Home = () => {
     console.log("googleApiKey", googleApiKey);
     const [location, setLocation] = useState(null);
     const [data, setData] = useState(undefined);
-    const [autocompleteData, setAutocompleteData] = useState(undefined);
     const [specialities, setSpecialities] = useState([]);
     const [specialityGroups, setSpecialityGroups] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState("");
     const [selectedSpeciality, setSelectedSpeciality] = useState("");
     const [selectableSpecialities, setSelectableSpecialities] = useState([]);
+    const [result, setResult] = useState("");
     let groupSelectRef = useRef();
+    let googlePlacesAutocompleteRef = useRef();
+
+    const retrieveHospitalsSpecialities = async () => {
+      const lists = await get_hospitals_specialities();
+      if (lists == undefined)
+        return;
+      setSpecialities(lists.specialitiesList);
+      setSelectableSpecialities(lists.specialitiesList);
+      setSpecialityGroups(lists.groupList);
+    };
 
     useEffect(() => {
-      let url = import.meta.env.VITE_HOSPITAL_SERVICE_URL;
-      url += "/hospital/specialities";
-      fetch(url, {
-        method: 'GET', // or 'PUT'
-        mode: 'cors',
-        Accept: '*/*',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-      }).then(async (data) => {
-        let body = await BodyReader(data.body);
-        
-        console.log("Result: " + body);
-        const parsed = JSON.parse(body);
-        let groupList = [];
-        let specialitiesList = [];
-        for (let obj of parsed.specialities) {
-          console.log(JSON.stringify(obj));
-          groupList.push(obj.group);
-          specialitiesList.push(obj);
-        }
-        console.log("grouplist length ", groupList.length);
-        groupList = [...new Set(groupList)];
-        console.log("grouplist length ", groupList.length);
-        setSpecialities(specialitiesList);
-        setSelectableSpecialities(specialitiesList);
-        setSpecialityGroups(groupList);
-      }, (error) => {
-        console.log("Error: " + error);
-      });
+      retrieveHospitalsSpecialities();
     }, []);
 
     function getLocation() {
@@ -65,47 +47,18 @@ const Home = () => {
         }
     }
 
-    function getLocationSuccess(position) {
+    const getLocationSuccess = async (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         setLocation({ latitude, longitude });
-        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-        //Geocode.fromLatLng(latitude,longitude, googleApiKey)
-        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&location_type=ROOFTOP&key=${googleApiKey}`).then(
-            async (data) => {
-              console.log("HERE");
-              console.log(data);
-              let body = await BodyReader(data.body);
-              console.log("Result: " + body);
-              body = JSON.parse(body);
-              if (body.status === "ZERO_RESULTS") {
-                toast.error("We are unable to find your localization please enter it manually.");
-                return;
-              }
-              const address = body.results[0].formatted_address;
-              let city, state, country;
-              for (let i = 0; i < body.results[0].address_components.length; i++) {
-                for (let j = 0; j < body.results[0].address_components[i].types.length; j++) {
-                  switch (body.results[0].address_components[i].types[j]) {
-                    case "locality":
-                      city = body.results[0].address_components[i].long_name;
-                      break;
-                    case "administrative_area_level_1":
-                      state = body.results[0].address_components[i].long_name;
-                      break;
-                    case "country":
-                      country = body.results[0].address_components[i].long_name;
-                      break;
-                  }
-                }
-              }
-              console.log(city, state, country);
-              console.log(address);
-              setData(address)
-            },
-            (error) => {
-              console.error(error);
-            });
+
+        const address = await get_address_from_coords(latitude, longitude);
+        if (address == undefined) {
+          toast.error("We are unable to find your localization please enter it manually.");
+        } else {
+          setData(address)
+        }
+
     }
 
     function getLocationError(error) {
@@ -134,6 +87,21 @@ const Home = () => {
       groupSelectRef.current.value = specialities[index].group;
     }
 
+    const getLocationFromAutocomplete = async (autocompleteData) => {
+      console.log(autocompleteData);
+      const coords = await get_coords_from_address(autocompleteData.label);
+      if (coords != undefined)
+        setLocation({latitude: coords.latitude, longitude: coords.longitude});
+    }
+
+    const onBtnSearch = async () => {
+      console.log(location);
+      if (location == null) return;
+      const result = await find_nearest_hospital(selectedSpeciality, location.latitude, location.longitude);
+      if (result.statusCode == 200)
+        setResult(result.body.data);
+    }
+
     return (
         <div className="windows">
             <div><Toaster/></div>
@@ -152,18 +120,25 @@ const Home = () => {
                 </select>
                 <div className='locationInput'>
                     <GooglePlacesAutocomplete 
+                        ref={googlePlacesAutocompleteRef}
                         apiKey={googleApiKey} 
                         selectProps={{
                             inputValue: data,
                             defaultInputValue: data, //set default value
-                            onChange: setAutocompleteData, //save the value gotten from google
+                            onChange: (data) => getLocationFromAutocomplete(data), //save the value gotten from google
                             placeholder: "Select your localization",
                         }}
                     />
-                    <button className='locButton' onClick={getLocation}><img className="locImage" src="loc.png"/></button>
+                    <button className='locButton' onClick={getLocation}><img height='20' src="loc.png"/></button>
                 </div>
-                <button className="btnSubmit" > Search </button>
+                <button className="btnSubmit" onClick={onBtnSearch} > Search </button>
             </div>
+            { result === "" ? null : 
+              <div className='resultContainer'>
+                <h1>Nearest hospital</h1>
+                <h2>{result}</h2>
+              </div>
+            }
         </div>
     );
 }

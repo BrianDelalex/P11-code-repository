@@ -3,10 +3,12 @@ package com.medhead.POC.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/** Represents an hospital document from mongoDB
+ */
 @Document(collection = "Hospital")
 public class Hospital {
     @Id
-    public String id;
+    private String id;
 
     public void setId(String id) {
         this.id = id;
@@ -16,7 +18,7 @@ public class Hospital {
         return id;
     }
 
-    public int freeBeds;
+    private int freeBeds;
     public int getFreeBeds() {
         return freeBeds;
     }
@@ -25,7 +27,7 @@ public class Hospital {
         this.freeBeds = freeBeds;
     }
 
-    public String latitude;
+    private String latitude;
     public String getLatitude() {
         return latitude;
     }
@@ -34,7 +36,7 @@ public class Hospital {
         this.latitude = latitude;
     }
 
-    public String longitude;
+    private String longitude;
     public String getLongitude() {
         return longitude;
     }
@@ -43,7 +45,7 @@ public class Hospital {
         this.longitude = longitude;
     }
 
-    public String organisationName;
+    private String organisationName;
     public String getOrganisationName() {
         return organisationName;
     }
@@ -52,7 +54,7 @@ public class Hospital {
         this.organisationName = organisationName;
     }
 
-    public String[] specialities;
+    private String[] specialities;
 
     public String[] getSpecialities() {
         return specialities;

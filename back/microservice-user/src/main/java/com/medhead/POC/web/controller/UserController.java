@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,12 +20,12 @@ public class UserController {
     @Autowired
     UserRepository repository;
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
-
+    
     @GetMapping("/hello")
     public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
         return String.format("Hello %s!", name);
     }
-
+    
     @PostMapping(value = "/user/register")
     public ResponseEntity<String> addUser(
         @RequestParam(value = "username", required = true)String username,
