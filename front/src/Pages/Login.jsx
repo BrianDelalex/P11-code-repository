@@ -31,7 +31,7 @@ const Login = () => {
     return (
         <div className="window">
             <div className="errorContainer">{error.displayed ? error.msg : null}</div>
-            <form className="inputContainer" onSubmit={(e) => onSubmit(e)}>
+            <form className="inputContainerLogin" onSubmit={(e) => onSubmit(e)}>
                 <input
                     type="text"
                     onChange={e => setCredentials(state => ({...state, login: e.target.value}))} 

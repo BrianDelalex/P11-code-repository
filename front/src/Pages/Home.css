@@ -1,8 +1,11 @@
 .windows {
     width: 40%;
-    height: 30%;
-    margin: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    position: absolute;
     border-radius: 2px;
+}
 }
 
 @media only screen and (max-width: 1024px) {
@@ -38,8 +41,8 @@
     flex-direction: column;
     gap: 10px;
     margin: auto;
-    padding: 80px;
-    background-color: grey;
+    padding: 40px;
+    background-color: rgba(190, 190, 190, 0.75);
 }
 
 select {

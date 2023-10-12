@@ -1,13 +1,12 @@
 .window {
-    width: 40%;
-    height: 30%;
-    margin: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    position: absolute;
     border-radius: 2px;
-    padding: 80px;
 }
 
-.inputContainer {
-    height: 100%;
+.inputContainerLogin {
     border-radius: 10px;
     display: flex;
     justify-content: center; /* Vertical */
@@ -15,7 +14,7 @@
     row-gap: 10px;
     margin: auto;
     padding: 50px;
-    background-color: rgb(190, 190, 190);
+    background-color: rgba(190, 190, 190, 0.75);
 }
 
 .errorContainer {

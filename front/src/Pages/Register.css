@@ -1,9 +1,10 @@
 .window {
     width: 40%;
-    height: 30%;
-    margin: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    position: absolute;
     border-radius: 2px;
-    padding: 80px;
 }
 
 .inputContainer {
