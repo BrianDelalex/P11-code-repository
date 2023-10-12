@@ -32,6 +32,15 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         gradle-version: release-candidate
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.10.0
+      with:
+        mongodb-version: '1.10.0'
+        mongodb-port: 27017
+    - name: Import data to MongoDB
+      run: |
+        cd data
+        mongorestore --db P11 --verbose ./
     - name: Build
       run: |
         cd back/microservice-hospital
