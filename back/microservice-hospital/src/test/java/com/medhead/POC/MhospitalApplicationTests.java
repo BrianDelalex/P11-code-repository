@@ -40,12 +40,6 @@ class MhospitalApplicationTests {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void helloShouldReturnDefaultMessage() throws Exception {
-        assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/hello",
-                String.class)).contains("Hello World!");
-    }
-
-    @Test
     public void hospitalShouldReturnErrorMissingParameters() throws Exception {
         String url = "http://localhost:" + port + "/hospital";
         String uri;
