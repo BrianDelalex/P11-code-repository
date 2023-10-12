@@ -37,7 +37,9 @@ jobs:
       with:
         mongodb-version: '7.0'
         mongodb-port: 27017
-    - name: Import data to MongoDB
+    - name: Setup Mongo tools
+      uses: boly38/action-mongo-tools@stable
+    - name: Restore mongodb data
       run: |
         cd data
         mongorestore --db P11 --verbose ./
