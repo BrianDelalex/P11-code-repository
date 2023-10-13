@@ -41,8 +41,8 @@ jobs:
       uses: boly38/action-mongo-tools@stable
     - name: Restore mongodb data
       run: |
-        cd data
-        mongorestore --db P11 --verbose ./
+        cd back/data
+        mongorestore --db P11 --verbose ./hospital
     - name: Build
       run: |
         cd back/microservice-hospital
@@ -66,6 +66,17 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         gradle-version: release-candidate
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.10.0
+      with:
+        mongodb-version: '7.0'
+        mongodb-port: 27017
+    - name: Setup Mongo tools
+      uses: boly38/action-mongo-tools@stable
+    - name: Restore mongodb data
+      run: |
+        cd back/data
+        mongorestore --db P11 --verbose ./user
     - name: Build
       run: |
         cd back/microservice-user

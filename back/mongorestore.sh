@@ -1,0 +1,1 @@
+mongorestore --verbose --db P11 /dump/hospital
