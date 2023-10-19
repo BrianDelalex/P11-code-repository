@@ -15,7 +15,11 @@ import com.mongodb.client.MongoDatabase;
 
 public class MongoTest {
 
+    private static final String HOST = "localhost";
+
     private void assertInsertSucceeds(ConfigurableApplicationContext context) {
+        System.setProperty("spring.data.mongodb.host", HOST);
+        System.setProperty("spring.data.mongodb.port", PORT);
         String collectionName = "Hospital";
 
         MongoTemplate mongo = context.getBean(MongoTemplate.class);

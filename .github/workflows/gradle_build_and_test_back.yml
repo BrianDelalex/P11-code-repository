@@ -50,7 +50,7 @@ jobs:
     - name: Test
       run: |
         cd back/microservice-hospital
-        gradle test -i -D=--spring.data.mongodb.host=127.0.0.1
+        gradle test -i
   build_and_test_service_user:
 
     runs-on: ubuntu-latest
@@ -73,10 +73,10 @@ jobs:
         mongodb-port: 27017
     - name: Setup Mongo tools
       uses: boly38/action-mongo-tools@stable
-    - name: Restore mongodb data
-      run: |
-        cd back/data
-        mongorestore --db P11 --verbose ./user
+    # - name: Restore mongodb data
+    #   run: |
+    #     cd back/data
+    #     mongorestore --db P11 --verbose ./user
     - name: Build
       run: |
         cd back/microservice-user
@@ -84,4 +84,4 @@ jobs:
     - name: Test
       run: |
         cd back/microservice-user
-        gradle test -i -D=--spring.data.mongodb.uri=mongodb://127.0.0.1:27017/Users
+        gradle test -i
