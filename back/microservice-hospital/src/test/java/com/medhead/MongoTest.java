@@ -42,7 +42,7 @@ public class MongoTest {
         ConfigurableEnvironment environment = new StandardEnvironment();
         Properties props = new Properties();
         props.put("spring.data.mongodb.host", HOST);
-        environment.getPropertySources().addFirst(new PropertiesPropertySource("classpath:app.properties", props));
+        environment.getPropertySources().addFirst(new PropertiesPropertySource("classpath:override.properties", props));
         SpringApplicationBuilder app = new SpringApplicationBuilder(MhospitalApplication.class)
             .properties(props());
         app.run();
