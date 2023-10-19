@@ -8,6 +8,9 @@ import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.PropertiesPropertySource;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.medhead.POC.MhospitalApplication;
@@ -36,7 +39,12 @@ public class MongoTest {
 
     @Test
     public void whenPropertiesConfig_thenInsertSucceeds() {
-        SpringApplicationBuilder app = new SpringApplicationBuilder(MhospitalApplication.class).properties(props());
+        ConfigurableEnvironment environment = new StandardEnvironment();
+        Properties props = new Properties();
+        props.put("spring.data.mongodb.host", HOST);
+        environment.getPropertySources().addFirst(new PropertiesPropertySource("myProps", props));
+        SpringApplicationBuilder app = new SpringApplicationBuilder(MhospitalApplication.class)
+            .properties(props());
         app.run();
 
         assertInsertSucceeds(app.context());
