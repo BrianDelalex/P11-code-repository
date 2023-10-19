@@ -19,7 +19,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-@TestPropertySource(locations = "classpath:test.properties")
+@TestPropertySource(properties = {"spring.data.mongodb.host=127.0.0.1"})
 public class MongoTest {
 
     private static final String HOST = "localhost";
