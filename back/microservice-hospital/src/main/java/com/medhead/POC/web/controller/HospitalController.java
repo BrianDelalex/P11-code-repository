@@ -108,7 +108,6 @@ public class HospitalController {
                 HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(null, headers);
                 HttpEntity<Response> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, Response.class, params);
 
-                System.out.println(h.getOrganisationName() + ": duration " + response.getBody().GetDuration());
                 responses.add(response.getBody());
             }
         }
