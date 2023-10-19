@@ -19,7 +19,6 @@ public class MongoTest {
 
     private void assertInsertSucceeds(ConfigurableApplicationContext context) {
         System.setProperty("spring.data.mongodb.host", HOST);
-        System.setProperty("spring.data.mongodb.port", PORT);
         String collectionName = "Hospital";
 
         MongoTemplate mongo = context.getBean(MongoTemplate.class);
