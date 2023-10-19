@@ -12,12 +12,14 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.context.TestPropertySource;
 
 import com.medhead.POC.MhospitalApplication;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+@TestPropertySource(locations = "classpath:test.properties")
 public class MongoTest {
 
     private static final String HOST = "localhost";
@@ -39,10 +41,6 @@ public class MongoTest {
 
     @Test
     public void whenPropertiesConfig_thenInsertSucceeds() {
-        ConfigurableEnvironment environment = new StandardEnvironment();
-        Properties props = new Properties();
-        props.put("spring.data.mongodb.host", HOST);
-        environment.getPropertySources().addFirst(new PropertiesPropertySource("classpath:override.properties", props));
         SpringApplicationBuilder app = new SpringApplicationBuilder(MhospitalApplication.class)
             .properties(props());
         app.run();
