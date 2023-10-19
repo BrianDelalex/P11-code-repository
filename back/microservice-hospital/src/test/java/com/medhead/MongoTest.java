@@ -36,12 +36,15 @@ public class MongoTest {
 
     @Test
     public void whenPropertiesConfig_thenInsertSucceeds() {
-        SpringApplicationBuilder app = new SpringApplicationBuilder(MhospitalApplication.class);
-        Properties properties = new Properties();
-        properties.put("spring.data.mongodb.host", HOST);
-        app.application().setDefaultProperties(properties);
+        SpringApplicationBuilder app = new SpringApplicationBuilder(MhospitalApplication.class).properties(props());
         app.run();
 
         assertInsertSucceeds(app.context());
-}
+    }
+
+    private static Properties props() {
+        Properties properties = new Properties();
+        properties.setProperty("spring.data.mongodb.host", HOST);
+        return properties;
+      }
 }
