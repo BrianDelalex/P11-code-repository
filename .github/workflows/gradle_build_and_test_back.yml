@@ -50,7 +50,7 @@ jobs:
     - name: Test
       run: |
         cd back/microservice-hospital
-        gradle test -i
+        gradle test -i -D=--spring.data.mongodb.host=127.0.0.1
   build_and_test_service_user:
 
     runs-on: ubuntu-latest
@@ -84,4 +84,4 @@ jobs:
     - name: Test
       run: |
         cd back/microservice-user
-        gradle test -i
+        gradle test -i -D=--spring.data.mongodb.uri=mongodb://127.0.0.1:27017/Users
