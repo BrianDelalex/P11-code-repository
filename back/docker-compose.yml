@@ -8,6 +8,14 @@ services:
       - 9001:9001
     depends_on:
       - mongo
+  microservice-user:
+    build:
+      context: ./microservice-user/
+      dockerfile: Dockerfile
+    ports:
+      - 9002:9002
+    depends_on:
+      - mongo
   mongo:
     image: mongo:latest
     container_name: mongo
