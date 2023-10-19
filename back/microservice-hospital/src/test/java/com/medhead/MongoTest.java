@@ -2,6 +2,8 @@ package com.medhead;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Properties;
+
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -35,6 +37,9 @@ public class MongoTest {
     @Test
     public void whenPropertiesConfig_thenInsertSucceeds() {
         SpringApplicationBuilder app = new SpringApplicationBuilder(MhospitalApplication.class);
+        Properties properties = new Properties();
+        properties.put("spring.data.mongodb.host", HOST);
+        app.application().setDefaultProperties(properties);
         app.run();
 
         assertInsertSucceeds(app.context());
