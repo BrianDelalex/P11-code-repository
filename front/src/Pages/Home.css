@@ -26,7 +26,7 @@
     gap: 10px;
     margin: auto;
     margin-top: 10px;
-    padding: 80px;
+    padding: 40px;
     color: black;
     background-color: grey;
 }
@@ -54,6 +54,14 @@ select {
 }
 
 .locationInput {
+    display: flex;
+    justify-content: center; /* Vertical */
+    align-items: center;
+    flex-direction: row;
+    height: 50px;
+}
+
+.reserveButton {
     display: flex;
     justify-content: center; /* Vertical */
     align-items: center;

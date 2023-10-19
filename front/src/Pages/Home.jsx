@@ -137,6 +137,7 @@ const Home = () => {
               <div className='resultContainer'>
                 <h1>Nearest hospital</h1>
                 <h2>{result}</h2>
+                <button className='reserveButton'>Reserve</button>
               </div>
             }
         </div>
