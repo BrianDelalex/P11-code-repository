@@ -12,6 +12,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 import com.medhead.POC.MhospitalApplication;
@@ -19,13 +20,9 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-@TestPropertySource(properties = {"spring.data.mongodb.host=127.0.0.1"})
 public class MongoTest {
 
-    private static final String HOST = "localhost";
-
     private void assertInsertSucceeds(ConfigurableApplicationContext context) {
-        System.setProperty("spring.data.mongodb.host", HOST);
         String collectionName = "Hospital";
 
         MongoTemplate mongo = context.getBean(MongoTemplate.class);
@@ -41,16 +38,9 @@ public class MongoTest {
 
     @Test
     public void whenPropertiesConfig_thenInsertSucceeds() {
-        SpringApplicationBuilder app = new SpringApplicationBuilder(MhospitalApplication.class)
-            .properties(props());
+        SpringApplicationBuilder app = new SpringApplicationBuilder(MhospitalApplication.class);
         app.run();
 
         assertInsertSucceeds(app.context());
     }
-
-    private static Properties props() {
-        Properties properties = new Properties();
-        properties.setProperty("spring.data.mongodb.host", HOST);
-        return properties;
-      }
 }

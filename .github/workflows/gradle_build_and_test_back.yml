@@ -48,6 +48,8 @@ jobs:
         cd back/microservice-hospital
         gradle build --dry-run
     - name: Test
+      env:
+        mongodbhost: 127.0.0.1
       run: |
         cd back/microservice-hospital
         gradle test -i
