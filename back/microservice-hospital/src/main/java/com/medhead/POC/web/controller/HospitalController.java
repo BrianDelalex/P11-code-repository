@@ -44,26 +44,6 @@ public class HospitalController {
         return this.restTemplate = builder.build();
     }
 
-    /** GET Route at /hospital/bySpeciality.
-     * Retrieves all hospitals with the corresponding speciality.
-     * @param speciality The speciality you are looking for.
-     * @return A list of all the hospitals in the DB with the corresponding speciality.
-    */
-    @GetMapping(value = "/hospital/bySpeciality", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> hospitalBySpeciality(@RequestParam(value = "speciality", defaultValue = "")String speciality) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Custom-Header", "foo");
-        if (speciality.isEmpty()) {
-            return new ResponseEntity<>("Bad Request", headers, HttpStatus.BAD_REQUEST);
-        }
-        List<String> specialities = new ArrayList<String>();
-        specialities.add(speciality);
-        System.out.println("Request at /hospital/bySpeciality with param speciality=" + speciality);
-        List<Hospital> hospitals = repository.findBySpecialitiesIsContaining(specialities);
-        
-        return new ResponseEntity<String>(hospitals.toString(), headers, HttpStatus.OK);
-    }
-
     /** GET Route at /hospital.
      * Retrieves the nearest hospital with a corresponding speciality.
      * @param speciality The speciality you are looking for.

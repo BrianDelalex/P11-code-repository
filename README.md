@@ -13,7 +13,11 @@ This project contains source code and supporting files for MedHead project's Pro
 
 Once the prerequisites set up run the following commands to build.
 ```
-cd back
+cd back/microservice-hospital
+// OR
+cd back/microservice-user
+
+// Once in one of the microservice directory run
 ./gradlew.bat build
 ```
 
@@ -62,3 +66,19 @@ This workflow use the below actions.
 - [actions/setup-node](https://github.com/actions/setup-node) => This action download and cache distribution of the requested Node.js version and cache yarn dependencies.
 
 On push or pull request on the main branch this workflow will automatically build the front part of the project and run the unit tests related to it.
+
+# Workflows - Build docker front
+
+This workflow use the below actions.
+
+- [actions/checkout](https://github.com/actions/checkout) => This action checks-out your repository under $GITHUB_WORKSPACE, so your workflow can access it.
+
+On push or pull request on the main branch this workflow will automatically build the docker image for the front.
+
+# Workflows - Build docker back
+
+This workflow use the below actions.
+
+- [actions/checkout](https://github.com/actions/checkout) => This action checks-out your repository under $GITHUB_WORKSPACE, so your workflow can access it.
+
+On push or pull request on the main branch this workflow will automatically build the docker image for the back.
