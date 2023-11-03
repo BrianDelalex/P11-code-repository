@@ -36,11 +36,13 @@ const Login = () => {
                     type="text"
                     onChange={e => setCredentials(state => ({...state, login: e.target.value}))} 
                     placeholder="Login"
+                    className="login"
                 />
                 <input 
                     type="password" 
                     onChange={e => setCredentials(state => ({...state, password: e.target.value}))}
                     placeholder="Password"
+                    className="password"
                 />
                 <button type="submit" >Login</button>
                 <button className="btnRegister" onClick={() => navigate('/register')}>Register</button>

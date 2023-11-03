@@ -27,6 +27,8 @@ const Register = () => {
         if (data.statusCode == 200) {
             console.log(data);
             navigate('/login');
+        } else if (data.statusCode == 409) {
+            setError({displayed: true, msg: "The given username already exists."});
         } else {
             setError({displayed: true, msg: "An error occured please retry."});
         }
@@ -37,17 +39,20 @@ const Register = () => {
             <div className="errorContainer">{error.displayed ? error.msg : null}</div>
             <form className="inputContainer" onSubmit={(e) => onSubmit(e)}>
                 <input
+                    className="login"
                     type="text"
                     onChange={e => setCredentials(state => ({...state, login: e.target.value}))} 
                     placeholder="Login"
                 />
-                <input 
-                    type="password" 
+                <input
+                    className="password"
+                    type="password"
                     onChange={e => setCredentials(state => ({...state, password: e.target.value}))}
                     placeholder="Password"
                 />
-                <input 
-                    type="password" 
+                <input
+                    className="confirmpassword"
+                    type="password"
                     onChange={e => setCredentials(state => ({...state, passwordConfirm: e.target.value}))}
                     placeholder="Confirm password"
                 />
