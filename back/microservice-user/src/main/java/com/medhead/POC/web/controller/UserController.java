@@ -30,6 +30,12 @@ public class UserController {
     public ResponseEntity<String> addUser(
         @RequestParam(value = "username", required = true)String username,
         @RequestParam(value = "password", required = true)String pwd_b64) {
+
+        User user = repository.findByUsername(username);
+
+        if (user != null) {
+            return new ResponseEntity<String>("Username already used", null, HttpStatus.CONFLICT);
+        }
         String encrypted = encoder.encode(pwd_b64);
         repository.save(new User(username, encrypted));
 

@@ -102,7 +102,6 @@ public class HospitalController {
             for (Response r : responses) {
                 if (r == nearest) {
                     result = hospitals.get(i);
-                    System.out.println("The nearest hospital is " + hospitals.get(i).getOrganisationName());
                     break;
                 }
                 i++;
@@ -130,7 +129,6 @@ public class HospitalController {
         headers.add("Content-Type", "application/json");
         List<Speciality> specialities = specialityRepository.findAll();
 
-        System.out.println("List size " + specialities.size() );
         String json = "{ \"specialities\": [";
         for (Speciality s : specialities) {
             json += s.ToJson();
