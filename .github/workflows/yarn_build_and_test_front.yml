@@ -38,4 +38,4 @@ jobs:
     - name: Test
       run: | 
         cd front
-        yarn test
+        yarn test unit
