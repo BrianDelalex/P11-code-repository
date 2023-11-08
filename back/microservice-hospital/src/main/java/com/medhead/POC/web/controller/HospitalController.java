@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.medhead.POC.web.logic.HospitalLogic;
 import com.medhead.POC.dao.HospitalRepository;
 import com.medhead.POC.dao.SpecialityRepository;
 import com.medhead.POC.models.Hospital;
@@ -35,11 +36,14 @@ import com.medhead.POC.models.MatrixApiTypes.Response;
 public class HospitalController {
     @Autowired
     private SpecialityRepository specialityRepository;
-    @Autowired
-    private HospitalRepository repository;
-    private RestTemplate restTemplate;
+    public RestTemplate restTemplate;
 
-      @Bean
+    private HospitalLogic hospitalLogic = new HospitalLogic();
+
+    @Autowired
+    public HospitalRepository repository;
+
+    @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return this.restTemplate = builder.build();
     }
@@ -57,58 +61,17 @@ public class HospitalController {
         @RequestParam(value = "latitude", required = true)String latitude,
         @RequestParam(value = "longitude", required = true)String longitude)
     {
+        Map<String, String> data = new HashMap<>();
         if (speciality.isEmpty()) {
-            Map<String, String> data = new HashMap<>();
             data.put("reason", "INVALID_PARAMETER");
             data.put("message", "'speciality' parameter is empty.");
             return new ResponseEntity<Map<String, String>>(data, null, HttpStatus.BAD_REQUEST);
         }
-        List<String> specialities = new ArrayList<String>();
-        specialities.add(speciality);
-        List<Hospital> hospitals = repository.findBySpecialitiesIsContaining(specialities);
-        List<Response> responses = new ArrayList<Response>();
 
-        hospitals = hospitals
-            .stream()
-            .filter(h -> h.getFreeBeds() > 0)
-            .collect(Collectors.toList());
-
-        for (Hospital h : hospitals) {
-            if (!hospitals.isEmpty()) {
-                HttpHeaders headers = new HttpHeaders();
-                List<MediaType> mediaTypes = new ArrayList<MediaType>();;
-                mediaTypes.add(MediaType.ALL);
-                headers.setAccept(mediaTypes);
-                String url = "https://maps.googleapis.com/maps/api/distancematrix/json?destinations={destinations}&origins={origins}&key={key}";
-
-                Map<String, String> params = new HashMap<>(Collections.singletonMap("destinations", h.getLatitude() + "," + h.getLongitude()));
-                params.put("origins", latitude + "," + longitude);
-                params.put("key", "AIzaSyCs6HGKrAjFRAzM_B3dVS50LrKcxboru54");
-
-                HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(null, headers);
-                HttpEntity<Response> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, Response.class, params);
-
-                responses.add(response.getBody());
-            }
-        }
-
-        Response nearest = responses
-            .stream()
-            .min(Comparator.comparing(Response::GetDuration))
-            .orElse(null);
-        Hospital result = null;
-        if (nearest != null) {
-            int i = 0;
-            for (Response r : responses) {
-                if (r == nearest) {
-                    result = hospitals.get(i);
-                    break;
-                }
-                i++;
-            }
-        }
-
-        Map<String, String> data = new HashMap<>();
+        long start = System.currentTimeMillis();
+        Hospital result = hospitalLogic.GetNearestHospital(this, speciality, latitude, longitude);
+        long time = System.currentTimeMillis() - start;
+        System.out.println("duration " + time + " ms");
         data.put("data", "not_found");
 
         if (result == null) {
@@ -117,6 +80,64 @@ public class HospitalController {
 
         data.put("data", result.getOrganisationName());
         return new ResponseEntity<Map<String, String>>(data, null, HttpStatus.OK);
+        // List<String> specialities = new ArrayList<String>();
+        // specialities.add(speciality);
+        // List<Hospital> hospitals = repository.findBySpecialitiesIsContaining(specialities);
+        // List<Response> responses = new ArrayList<Response>();
+
+        // hospitals = hospitals
+        //     .stream()
+        //     .filter(h -> h.getFreeBeds() > 0)
+        //     .collect(Collectors.toList());
+
+        
+        // long start = System.currentTimeMillis();
+        // for (Hospital h : hospitals) {
+        //     if (!hospitals.isEmpty()) {
+        //         HttpHeaders headers = new HttpHeaders();
+        //         List<MediaType> mediaTypes = new ArrayList<MediaType>();;
+        //         mediaTypes.add(MediaType.ALL);
+        //         headers.setAccept(mediaTypes);
+        //         String url = "https://maps.googleapis.com/maps/api/distancematrix/json?destinations={destinations}&origins={origins}&key={key}";
+
+        //         Map<String, String> params = new HashMap<>(Collections.singletonMap("destinations", h.getLatitude() + "," + h.getLongitude()));
+        //         params.put("origins", latitude + "," + longitude);
+        //         params.put("key", "AIzaSyCs6HGKrAjFRAzM_B3dVS50LrKcxboru54");
+
+        //         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(null, headers);
+        //         HttpEntity<Response> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, Response.class, params);
+
+        //         responses.add(response.getBody());
+        //     }
+        // }
+        // long time = System.currentTimeMillis() - start;
+        // System.out.println("duration " + time + " ms");
+
+        // Response nearest = responses
+        //     .stream()
+        //     .min(Comparator.comparing(Response::GetDuration))
+        //     .orElse(null);
+        // Hospital result = null;
+        // if (nearest != null) {
+        //     int i = 0;
+        //     for (Response r : responses) {
+        //         if (r == nearest) {
+        //             result = hospitals.get(i);
+        //             break;
+        //         }
+        //         i++;
+        //     }
+        // }
+
+        // Map<String, String> data = new HashMap<>();
+        // data.put("data", "not_found");
+
+        // if (result == null) {
+        //     return new ResponseEntity<Map<String, String>>(data, null, HttpStatus.OK);
+        // }
+
+        // data.put("data", result.getOrganisationName());
+        // return new ResponseEntity<Map<String, String>>(data, null, HttpStatus.OK);
     }
 
      /** GET Route at /hospital/specialities.

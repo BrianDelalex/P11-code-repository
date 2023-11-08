@@ -9,6 +9,9 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
+import com.medhead.POC.web.controller.HospitalController;
+import com.medhead.POC.web.logic.HospitalLogic;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,11 +25,14 @@ class MhospitalApplicationTests {
  * Sanity check test.
  */
     @Autowired
-    private MhospitalApplication controller;
+    private MhospitalApplication app;
+
+    @Autowired
+    private HospitalController controller;
 
     @Test
     void contextLoads() {
-        assertThat(controller).isNotNull();
+        assertThat(app).isNotNull();
     }
 
 /**
@@ -103,5 +109,12 @@ class MhospitalApplicationTests {
         ResponseEntity<String> response = this.restTemplate.exchange(url + uri, HttpMethod.GET, null, String.class, params);
         assertEquals(200, response.getStatusCode().value());
         assertThat(response.getBody()).contains("Lee Mill Hospital");
+    }
+
+    @Test
+    public void hospitalLogic() throws Exception {
+        HospitalLogic hLogic = new HospitalLogic();
+
+        hLogic.GetNearestHospital(controller, "Anesthésie", "50.39028759089191", "-3.9204667072600907");
     }
 }
