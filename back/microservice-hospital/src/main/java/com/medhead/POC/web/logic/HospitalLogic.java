@@ -45,6 +45,8 @@ public class HospitalLogic {
             .stream()
             .filter(h -> h.getFreeBeds() > 0)
             .collect(Collectors.toList());
+        if (hospitals.isEmpty())
+            return null;
         List<Double> distances = new ArrayList<Double>();
         // Calculating distance between request position and hospitals.
         for (Hospital h : hospitals) {

@@ -68,10 +68,7 @@ public class HospitalController {
             return new ResponseEntity<Map<String, String>>(data, null, HttpStatus.BAD_REQUEST);
         }
 
-        long start = System.currentTimeMillis();
         Hospital result = hospitalLogic.GetNearestHospital(this, speciality, latitude, longitude);
-        long time = System.currentTimeMillis() - start;
-        System.out.println("duration " + time + " ms");
         data.put("data", "not_found");
 
         if (result == null) {
