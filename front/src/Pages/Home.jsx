@@ -38,7 +38,7 @@ const Home = () => {
       retrieveHospitalsSpecialities();
     }, []);
 
-    function getLocation() {
+    const getLocation = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(getLocationSuccess, getLocationError);
         } else {
@@ -61,11 +61,11 @@ const Home = () => {
 
     }
 
-    function getLocationError(error) {
+    const getLocationError = (error) => {
         console.log(`Unable to retrieve your location ${error}`);
     }
 
-    function OnGroupSelected(evt) {
+    const OnGroupSelected = (evt) => {
       console.log("OnGroupSelected -> ", evt.currentTarget.value);
       setSelectedGroup(evt.currentTarget.value);
       const selectable = [];
@@ -79,7 +79,7 @@ const Home = () => {
       setSelectableSpecialities(selectable);
     }
 
-    function OnSpecialitySelected(evt) {
+    const OnSpecialitySelected = (evt) => {
       console.log("OnSpecialitySelected -> ", evt.currentTarget.value);
       setSelectedSpeciality(evt.currentTarget.value);
       const index = specialities.findIndex((element) => element.speciality === evt.currentTarget.value);
