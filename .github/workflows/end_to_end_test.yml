@@ -14,7 +14,7 @@ env:
 jobs:
   test_e2e:
     runs-on: ubuntu-latest
-     strategy:
+    strategy:
       matrix:
         node-version: [18.x]
     steps:
