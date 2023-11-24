@@ -11,6 +11,10 @@ function makeid(length) {
    return result;
 }
 
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
 describe("e2e suite", async () => {
     const login = makeid(8);
     const pwd = makeid(12);
@@ -53,15 +57,16 @@ describe("e2e suite", async () => {
         await page.select('select#speciality', 'Anesthésie');
 
         // Select localization
-        await page.type('input#react-select-3-input', "Plymouth");
+        await page.type('input#react-select-2-input', "Plymouth");
         await page.waitForNetworkIdle();
         await page.keyboard.press('Enter');
+        await sleep(1000);
 
         // Submit form and request the nearest hospital
         await page.click('button[class="btnSubmit"]');
+        await page.screenshot({path: "/home/bdelalex/images/e2e.jpg"});
         await page.waitForNetworkIdle();
         await page.waitForSelector('button[class="reserveButton"]');
-        await page.screenshot({path: "/home/bdelalex/Pictures/e2e.jpg"});
         await browser.close();
     })();
     it("true", () => {
