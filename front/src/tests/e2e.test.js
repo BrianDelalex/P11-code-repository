@@ -19,7 +19,13 @@ describe("e2e suite", async () => {
     const login = makeid(8);
     const pwd = makeid(12);
     await (async () => {
-        const browser = await puppeteer.launch({headless: true});
+        const browser = await puppeteer.launch({headless: true,  args: [
+            `--no-sandbox`
+            `--disable-setuid-sandbox`
+            `--disable-extensions-except=${extensionPath}`,
+            `--load-extension=${extensionPath}`
+          ],
+          slowMo: 50});
         const page = await browser.newPage();
         await page.goto('http://localhost:5173/home');
         // // Click on register
