@@ -21,9 +21,7 @@ describe("e2e suite", async () => {
     await (async () => {
         const browser = await puppeteer.launch({headless: true,  args: [
             `--no-sandbox`,
-            `--disable-setuid-sandbox`,
-            `--disable-extensions-except=${extensionPath}`,
-            `--load-extension=${extensionPath}`
+            `--disable-setuid-sandbox`
           ],
           slowMo: 50});
         const page = await browser.newPage();
