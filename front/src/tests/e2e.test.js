@@ -19,7 +19,7 @@ describe("e2e suite", async () => {
     const login = makeid(8);
     const pwd = makeid(12);
     await (async () => {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({headless: true});
         const page = await browser.newPage();
         await page.goto('http://localhost:5173/home');
         // // Click on register
