@@ -35,7 +35,7 @@ describe("e2e suite", async () => {
         await page.type('input[class="confirmpassword"]', pwd);
         const [navToLogin] = await Promise.all([
             page.waitForNavigation(),
-            page.keyboard.press('Enter')
+            page.keyboard.press('Enter', 200)
         ]);
         await navToLogin;
 
@@ -44,7 +44,7 @@ describe("e2e suite", async () => {
         await page.type('input[class="password"]', pwd);
         const [navToHome] = await Promise.all([
             page.waitForNavigation(),
-            page.keyboard.press('Enter')
+            page.keyboard.press('Enter', 200)
         ]);
         await navToHome;
 
@@ -59,7 +59,7 @@ describe("e2e suite", async () => {
         // Select localization
         await page.type('input#react-select-2-input', "Plymouth");
         await page.waitForNetworkIdle();
-        await page.keyboard.press('Enter');
+        await page.keyboard.press('Enter', 200);
         await sleep(1000);
 
         // Submit form and request the nearest hospital
