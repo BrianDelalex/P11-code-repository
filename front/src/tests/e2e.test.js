@@ -20,8 +20,8 @@ describe("e2e suite", async () => {
     const pwd = makeid(12);
     await (async () => {
         const browser = await puppeteer.launch({headless: true,  args: [
-            `--no-sandbox`
-            `--disable-setuid-sandbox`
+            `--no-sandbox`,
+            `--disable-setuid-sandbox`,
             `--disable-extensions-except=${extensionPath}`,
             `--load-extension=${extensionPath}`
           ],
