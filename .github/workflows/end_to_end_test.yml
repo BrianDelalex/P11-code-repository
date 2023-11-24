@@ -1,0 +1,39 @@
+
+name: End 2 End test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  VITE_HOSPITAL_SERVICE_URL: http://127.0.0.1:9001
+  VITE_USER_SERVICE_URL: http://127.0.0.1:9002
+
+jobs:
+  test_e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: run docker image back
+        run: |
+          cd back
+          docker-compose up -d
+      - name: Install front
+        run: |
+          cd front
+          yarn install
+      - name: Build front
+        run: | 
+          cd front
+          yarn build
+      - name: e2e test
+        run: | 
+          cd front
+          yarn test:e2e
+      - name: Stop docker back
+        run: |
+          cd back
+          docker-compose down
