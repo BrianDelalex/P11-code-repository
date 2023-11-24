@@ -32,12 +32,16 @@ jobs:
       - name: Run front
         run: |
           cd front
-          yarn dev
+          docker-compose up -d
       - name: e2e test
         run: | 
           cd front
-          docker-compose up -d
+          yarn test:e2e
       - name: Stop docker back
         run: |
           cd back
+          docker-compose down
+      - name: Stop docker front
+        run: |
+          cd front
           docker-compose down
