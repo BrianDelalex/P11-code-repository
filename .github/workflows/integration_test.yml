@@ -1,0 +1,38 @@
+
+name: Integration test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  VITE_HOSPITAL_SERVICE_URL: http://127.0.0.1:9001
+
+jobs:
+  test_integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: run docker image back
+        run: |
+          cd back
+          docker-compose up -d
+      - name: Install front
+        run: |
+          cd front
+          yarn install
+      - name: Build front
+        run: | 
+          cd front
+          yarn build
+      - name: Integration test
+        run: | 
+          cd front
+          yarn test:integration
+      - name: Stop docker back
+        run: |
+          cd back
+          docker-compose down

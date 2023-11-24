@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:unit": "vitest unit",
-    "test:e2e": "vitest e2e"
+    "test:e2e": "vitest e2e",
+    "test:integration": "vitest integration"
   },
   "dependencies": {
     "puppeteer": "^21.4.1",
