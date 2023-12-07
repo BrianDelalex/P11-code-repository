@@ -4,7 +4,7 @@ export const get_hospitals_specialities = async () => {
     let url = import.meta.env.VITE_HOSPITAL_SERVICE_URL;
     url += "/hospital/specialities";
     return await fetch(url, {
-      method: 'GET', // or 'PUT'
+      method: 'GET',
       mode: 'cors',
       Accept: '*/*',
       headers: {

@@ -95,14 +95,18 @@ public class HospitalLogic {
                 Map<String, String> params = new HashMap<>(Collections.singletonMap("destinations", h.getLatitude() + "," + h.getLongitude()));
                 params.put("origins", latitude + "," + longitude);
                 params.put("key", "AIzaSyCs6HGKrAjFRAzM_B3dVS50LrKcxboru54");
-
+                System.out.println("origins " + latitude + "," + longitude);
+                System.out.println("destinations " + h.getLatitude() + "," + h.getLongitude());
                 HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(null, headers);
                 HttpEntity<Response> response = controller.restTemplate.exchange(url, HttpMethod.GET, requestEntity, Response.class, params);
-
-                responses.add(response.getBody());
+                System.out.println(response);
+                if (!response.getBody().rows().isEmpty())
+                    responses.add(response.getBody());
             }
         }
 
+        if (responses.isEmpty())
+            return null;
         Response nearest = responses
             .stream()
             .min(Comparator.comparing(Response::GetDuration))

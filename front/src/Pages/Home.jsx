@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import Geocode from "react-geocode";
 import { Toaster, toast } from 'react-hot-toast';
-import BodyReader from '../Components/BodyReader';
+
 
 let googleApiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 import './Home.css'
@@ -13,7 +13,6 @@ Geocode.setLocationType("ROOFTOP");
 Geocode.setApiKey(googleApiKey);
 
 const Home = () => {
-    console.log("googleApiKey", googleApiKey);
     const [location, setLocation] = useState(null);
     const [data, setData] = useState(undefined);
     const [specialities, setSpecialities] = useState([]);
@@ -58,7 +57,6 @@ const Home = () => {
         } else {
           setData(address)
         }
-
     }
 
     const getLocationError = (error) => {
@@ -66,21 +64,17 @@ const Home = () => {
     }
 
     const OnGroupSelected = (evt) => {
-      console.log("OnGroupSelected -> ", evt.currentTarget.value);
       setSelectedGroup(evt.currentTarget.value);
       const selectable = [];
       for (const obj of specialities) {
-        console.log(`comp => ${obj.group} === ${evt.currentTarget.value}`);
         if (obj.group === evt.currentTarget.value) {
           selectable.push(obj);
-          console.log(`equal`);
         }
       }
       setSelectableSpecialities(selectable);
     }
 
     const OnSpecialitySelected = (evt) => {
-      console.log("OnSpecialitySelected -> ", evt.currentTarget.value);
       setSelectedSpeciality(evt.currentTarget.value);
       const index = specialities.findIndex((element) => element.speciality === evt.currentTarget.value);
       setSelectedGroup(specialities[index].group);
@@ -88,14 +82,12 @@ const Home = () => {
     }
 
     const getLocationFromAutocomplete = async (autocompleteData) => {
-      console.log(autocompleteData);
       const coords = await get_coords_from_address(autocompleteData.label);
       if (coords != undefined)
         setLocation({latitude: coords.latitude, longitude: coords.longitude});
     }
 
     const onBtnSearch = async () => {
-      console.log(location);
       if (location == null) return;
       const result = await find_nearest_hospital(selectedSpeciality, location.latitude, location.longitude);
       if (result.statusCode == 200)

@@ -1,4 +1,4 @@
-name: Docker build front
+name: Docker build back
 
 on:
   push:
